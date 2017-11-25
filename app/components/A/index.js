@@ -5,10 +5,21 @@
 import styled from 'styled-components';
 
 const A = styled.a`
-  color: #41addd;
+  background: #1db954;
+  border-radius: 40px;
+  color: #fff;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 20px;
+  padding: 15px 50px;
+  text-decoration: none;
+  transition: all 0.15s ease-in-out;
 
+  &:focus,
   &:hover {
-    color: #6cc0e5;
+    background: #1ed760;
+    text-decoration: none;
+    transition: all 0.15s ease-in-out;
   }
 `;
 

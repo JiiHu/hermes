@@ -260,8 +260,8 @@ export class HomePage extends React.PureComponent {
           <ResultSection>
             { this.state.closest ?
               <div>
-                <H3>You are closest to</H3>
-                <H2>{ this.state.closest.name }</H2>
+                <h3>You are closest to</h3>
+                <h2>{ this.state.closest.name }</h2>
               </div>
               :
               null
@@ -270,25 +270,27 @@ export class HomePage extends React.PureComponent {
           <ResultSection>
             { this.state.furthest ?
               <div>
-                <H3>You are furthest from</H3>
-                <H2>{ this.state.furthest.name }</H2>
+                <h3>You are furthest from</h3>
+                <h2>{ this.state.furthest.name }</h2>
               </div>
               :
               null
             }
           </ResultSection>
         </ResultContainer>
-        <p style={{textAlign: 'center', color: '#aaa'}}>{"Percentages below mean the difference of country's current top tracks against to your top tracks' features."}</p>
+        <p style={{textAlign: 'center', color: '#aaa', margin: "0 auto 30px", width: "80%"}}>{"Percentages below mean the difference of country's current top tracks against to your top tracks' features."}</p>
         <div>
           { this.state.furthest ?
             <div>
               <div style={{textAlign: "center"}}>
                 { Object.keys(this.state.furthest.meanFeatures).map(id =>
-                    <div style={{marginBottom: "10px"}} key={"furthest-"+id}>
+                    <div style={{marginBottom: "20px"}} key={"furthest-"+id}>
                       <CompYou>
                         { this.visualizedPercentage(this.topFeatures[id], this.state.closest.meanFeatures[id]) }
                       </CompYou>
-                      <CompValue> { id } </CompValue>
+                      <CompValue style={{fontSize: "22px"}}>
+                        { id.charAt(0).toUpperCase() + id.slice(1) }
+                      </CompValue>
                       <CompCountry>
                         { this.visualizedPercentage(this.topFeatures[id], this.state.furthest.meanFeatures[id]) }
                       </CompCountry>
@@ -312,20 +314,18 @@ export class HomePage extends React.PureComponent {
 
     return(
       <article>
-        <Helmet>
-          <title>Home Page</title>
-          <meta name="description" content="A React.js Boilerplate application homepage" />
-        </Helmet>
         <div>
           <CenteredSection>
-            <H2>Jes jes jes</H2>
-            <p>
-              <FormattedMessage {...messages.startProjectMessage} />
+            <h1 style={{fontSize: "60px", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.01em"}}>
+              What country are you based on your music taste?
+            </h1>
+            <p style={{color: "#aaa"}}>
+              { "With our app, you can find out to what country's top playlist's features your top tracks suit the most." }
             </p>
           </CenteredSection>
           <CenteredSection>
             <H2>
-              Login to Spotify
+              Login with Spotify
             </H2>
             <A href={authorizeURL}>
               Login now

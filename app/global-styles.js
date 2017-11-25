@@ -9,7 +9,9 @@ injectGlobal`
   }
 
   body {
+    background: #fafafa;
     font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    padding: 30px 10px;
   }
 
   body.fontLoaded {
@@ -20,6 +22,19 @@ injectGlobal`
     background-color: #fafafa;
     min-height: 100%;
     min-width: 100%;
+  }
+
+  h2 {
+    font-size: 42px;
+    line-height: 1.2;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  h3 {
+    color: #aaa;
+    font-weight: 400;
+    margin-bottom: 5px;
   }
 
   p,

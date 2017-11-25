@@ -7,6 +7,8 @@ import Wrapper from './Wrapper';
 import messages from './messages';
 
 function Footer() {
+  return (null);
+
   return (
     <Wrapper>
       <section>
