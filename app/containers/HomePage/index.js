@@ -41,7 +41,7 @@ export class HomePage extends React.PureComponent {
     };
   }
 
-  loadAuthCode() {
+  authorizeSpotify() {
     let localCode = localStorage.getItem('authCode');
 
     if (localCode != null) {
@@ -51,7 +51,8 @@ export class HomePage extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.loadAuthCode();
+    this.authorizeSpotify();
+
     console.log( this.spotify );
     this.spotify.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE')
       .then(function(data) {
