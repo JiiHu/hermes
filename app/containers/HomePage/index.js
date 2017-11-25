@@ -30,17 +30,23 @@ import { changeUsername } from './actions';
 import { makeSelectUsername } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+
 import spotifyApi from '../../constants/Spotify';
+import countryPlaylists from '../../constants/countryPlaylists';
+import analyzedCountryPlaylists from '../../constants/analyzedCountryPlaylists';
 
 export class HomePage extends React.PureComponent {
   constructor(props) {
     super(props);
     this.spotify = spotifyApi;
     this.state = {
-      code: null
+      code: null,
+      closestCountry: null,
     };
     this.topFeatures = [];
     this.topTracks = [];
+    //this.countries = countryPlaylists;
+    this.countries = analyzedCountryPlaylists;
   }
 
   authorizeSpotify() {
@@ -73,9 +79,54 @@ export class HomePage extends React.PureComponent {
       });
   }
 
+  printDevCountryJson() {
+    // see if all countries are analyzed
+    let amount = Object.values(this.countries).map(item => (
+      item.meanFeatures ? true : false
+    )).filter(v => v).length;
+
+    if (amount != Object.keys(this.countries).length) return;
+
+    // print the JSON to save locally
+    console.log( JSON.stringify(this.countries)  );
+  }
+
+  // smaller value = closer
+  calculateCloseness(countryFeatures) {
+    let total = 0;
+
+    Object.keys(countryFeatures).map(key => (
+      total += Math.abs(
+        this.topFeatures[key] - countryFeatures[key]
+      )
+    ));
+
+    return (
+      Math.round(total / Object.keys(countryFeatures).length * 100) / 100
+    )
+  }
+
+  findClosest() {
+    // calculate for each country that how close they are to user
+    Object.keys(this.countries).map(id => (
+      this.countries[id]["closeness"] = this.calculateCloseness( this.countries[id]["meanFeatures"] )
+    ));
+
+    let closest = Object.values(this.countries).sort(function(a, b) {
+      return a["closeness"] - b["closeness"];
+    })[0];
+
+    let furthest = Object.values(this.countries).sort(function(a, b) {
+      return b["closeness"] - a["closeness"];
+    })[0];
+
+    console.log( closest );
+    console.log( furthest );
+  }
+
+  // analyze all countries. only needed to run on dev env.
   analyzePlaylists() {
-    let playlists = [];
-    let playlistIds = Object.keys(playlists);
+    let playlistIds = Object.keys(this.countries);
 
     let _me = this;
 
@@ -86,11 +137,58 @@ export class HomePage extends React.PureComponent {
           var trackIds = data.body.items.map(item => (
             item.track.id
           ));
+          _me.countries[id]["trackIds"] = trackIds;
+
+          _me.spotify.getAudioFeaturesForTracks(trackIds)
+            .then(function(data) {
+              _me.countries[id]["meanFeatures"] = _me.analyseFeatures({}, data.body.audio_features);
+
+              let amount = Object.values(_me.countries).map(item => (
+                item.meanFeatures ? true : false
+              )).filter(v => v).length;
+
+              if (amount == Object.keys(_me.countries).length) {
+                _me.findClosest();
+              }
+
+              //_me.printDevCountryJson()
+            }, function(err) {
+              _me.resetAuthorization();
+            });
 
         }, function(err) {
           _me.resetAuthorization();
         })
     ));
+  }
+
+  analyseFeatures(features, audio_features) {
+    features = {
+      valence: 0,
+      tempo: 0,
+      acousticness: 0,
+      energy: 0,
+      danceability: 0,
+      liveness: 0,
+      speechiness: 0,
+      mode: 0,
+      key: 0,
+    };
+
+    audio_features.map(track => (
+      Object.keys(features).map(key => (
+        track != null ?
+          features[key] += track[key]
+        : null
+      ))
+    ));
+
+    let trackCount = audio_features.length;
+    Object.keys(features).map(key => (
+      features[key] = parseInt(features[key] / trackCount * 1000.0) / 1000.0
+    ))
+
+    return features;
   }
 
   analysisForTopTracks() {
@@ -102,35 +200,15 @@ export class HomePage extends React.PureComponent {
 
     this.spotify.getAudioFeaturesForTracks(trackIds)
       .then(function(data) {
-
-        let features = {
-          valence: 0,
-          tempo: 0,
-          acousticness: 0,
-          energy: 0,
-          danceability: 0,
-          liveness: 0,
-          speechiness: 0,
-          mode: 0,
-          key: 0,
-        };
-
-        data.body.audio_features.map(track => (
-          Object.keys(features).map(key => (
-            features[key] += track[key]
-          ))
-        ));
-
-        let trackCount = data.body.audio_features.length;
-        Object.keys(features).map(key => (
-          features[key] = parseInt(features[key] / trackCount * 1000.0) / 1000.0
-        ))
-
-        _me.topFeatures = features;
+        _me.topFeatures = _me.analyseFeatures({}, data.body.audio_features);
+        _me.findClosest();
 
       }, function(err) {
         _me.resetAuthorization();
       });
+
+    // analyze all countries
+    // this.analyzePlaylists();
   }
 
   authorized() {
