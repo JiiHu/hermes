@@ -54,8 +54,9 @@ export class HomePage extends React.PureComponent {
     };
     this.topFeatures = [];
     this.topTracks = [];
-    this.countries = countryPlaylists;
-    //this.countries = analyzedCountryPlaylists;
+
+    //this.countries = countryPlaylists;
+    this.countries = analyzedCountryPlaylists;
   }
 
   authorizeSpotify() {
@@ -101,35 +102,47 @@ export class HomePage extends React.PureComponent {
   }
 
   // smaller value = closer
-  calculateCloseness(countryFeatures) {
-    let total = 0;
+  calculateCloseness(playlistId) {
 
-    if (!countryFeatures) {
+    let playlist = this.countries[playlistId];
+
+    if (!playlist) {
       console.log("äh");
       return 0;
     }
 
-    Object.keys(countryFeatures).map(key => (
-      (key == "tempo") ?
-        total += Math.abs(
-          (this.topFeatures[key] / 200) - (countryFeatures[key] / 200)
-        )
-      :
-        total += Math.abs(
-          this.topFeatures[key] - countryFeatures[key]
+    let total = 0;
+
+    Object.keys(playlist.features).map(key => (
+      total += this.euclidean(
+          this.userFeatures[key].sort(),
+          playlist.features[key].sort()
         )
     ));
 
     return (
-      Math.round(total / Object.keys(countryFeatures).length * 100) / 100
+      Math.round(total / Object.keys(playlist.features).length * 100) / 100
     )
   }
 
+  squaredEuclidean(p, q) {
+    var d = 0;
+    for (var i = 0; i < p.length; i++) {
+      d += (p[i] - q[i]) * (p[i] - q[i]);
+    }
+    return d;
+  }
+
+  euclidean(p, q) {
+    // fix different length arrays
+    p = p.slice(0, q.length);
+    return Math.sqrt(this.squaredEuclidean(p, q));
+  }
+
   findClosest() {
-    console.log(this.countries);
     // calculate for each country that how close they are to user
-    Object.keys(this.countries).map(id => (
-      this.countries[id]["closeness"] = this.calculateCloseness( this.countries[id]["meanFeatures"] )
+    Object.keys(this.countries).map(playlistId => (
+      this.countries[playlistId]["closeness"] = this.calculateCloseness( playlistId )
     ));
 
     let closest = Object.values(this.countries).sort(function(a, b) {
@@ -142,6 +155,9 @@ export class HomePage extends React.PureComponent {
 
     this.setState({closest: closest});
     this.setState({furthest: furthest});
+
+    console.log(closest)
+    console.log(furthest)
   }
 
   // analyze all countries. only needed to run on dev env.
@@ -246,6 +262,7 @@ export class HomePage extends React.PureComponent {
     this.spotify.getAudioFeaturesForTracks(trackIds)
       .then(function(data) {
         _me.topFeatures = _me.analyseFeatures({}, data.body.audio_features);
+        _me.userFeatures = _me.pushFeatures({}, data.body.audio_features);
         _me.findClosest();
 
       }, function(err) {
@@ -253,7 +270,7 @@ export class HomePage extends React.PureComponent {
       });
 
     // analyze all countries on dev env
-    this.analyzePlaylists();
+    // this.analyzePlaylists();
   }
 
   visualizedPercentage(user, country) {
@@ -282,6 +299,7 @@ export class HomePage extends React.PureComponent {
       <article>
         <Helmet>
         </Helmet>
+        <br />
         <ResultContainer>
           <ResultSection>
             { this.state.closest ?
@@ -304,7 +322,11 @@ export class HomePage extends React.PureComponent {
             }
           </ResultSection>
         </ResultContainer>
-        <p style={{textAlign: 'center', color: '#aaa', margin: "0 auto 30px", width: "80%"}}>{"Percentages below mean the difference of country's current top tracks against to your top tracks' features."}</p>
+        <br />
+        <br />
+        <p style={{textAlign: 'center', color: '#aaa', margin: "0 auto 30px", width: "80%"}}>
+          {"Percentages below mean the mean difference of country's current top tracks against to your top tracks' features."}
+        </p>
         <div>
           { this.state.furthest ?
             <div>
