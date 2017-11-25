@@ -120,12 +120,12 @@ export class HomePage extends React.PureComponent {
           _me.userFeatures[key].sort(),
           playlist.features[key].sort()
         );
+
+      if (key == "tempo") distance = (distance / 120);
+      if (key == "key") distance = (distance / 10);
+
       playlist.distances[key] = distance;
-      if (key == "tempo") {
-        total += (distance / 120);
-      } else {
-        total += distance;
-      }
+      total += distance;
     });
 
     return (
@@ -331,10 +331,8 @@ export class HomePage extends React.PureComponent {
           </ResultSection>
         </ResultContainer>
         <br />
-        <br />
-        <p style={{textAlign: 'center', color: '#aaa', margin: "0 auto 30px", width: "80%"}}>
-          {"Percentages below mean the mean difference of country's current top tracks against to your top tracks' features."}
-        </p>
+        <p style={{textAlign: 'center', color: '#aaa', margin: "0 auto 10px", width: "80%"}}>{"How big is the distances between you and the country on the given feature?"}</p>
+        <p style={{textAlign: 'center', fontSize: "14px", color: '#ccc', margin: "0 auto 40px", width: "80%"}}>{"Smaller value = closer to you"}</p>
         <div>
           { this.state.furthest ?
             <div>
