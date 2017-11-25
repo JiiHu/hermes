@@ -28,9 +28,10 @@ export default class CallbackPage extends React.Component {
     let params = queryString.parse(this.props.location.search);
     let code = params.code;
 
-    localStorage.setItem('authCode', code);
-
-    this.setState({code});
+    if (code != null) {
+      localStorage.setItem('authCode', code);
+      this.setState({code});
+    }
   }
 
   componentDidMount() {

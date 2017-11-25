@@ -35,6 +35,7 @@ import spotifyApi from '../../constants/Spotify';
 export class HomePage extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.spotify = spotifyApi;
     this.state = {
       code: null
     };
@@ -42,13 +43,22 @@ export class HomePage extends React.PureComponent {
 
   loadAuthCode() {
     let localCode = localStorage.getItem('authCode');
-    if (localCode) {
+
+    if (localCode != null) {
       this.setState({code: localCode});
+      this.spotify.setAccessToken(localCode);
     }
   }
 
   componentDidMount() {
     this.loadAuthCode();
+    console.log( this.spotify );
+    this.spotify.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE')
+      .then(function(data) {
+        console.log('Artist albums', data.body);
+      }, function(err) {
+        console.error(err);
+      });
   }
 
   authorized() {
@@ -69,9 +79,9 @@ export class HomePage extends React.PureComponent {
 
   noAuthorization() {
 
-    let scopes = ['user-read-private', 'user-read-email'];
+    let scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-library-read', 'user-read-private', 'user-read-birthdate', 'user-read-email', 'user-follow-read', 'user-read-playback-state', 'user-read-recently-played', 'user-read-currently-playing'];
     let state = 'meme-state';
-    let authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
+    let authorizeURL = this.spotify.createAuthorizeURL(scopes, state);
 
     return(
       <article>
