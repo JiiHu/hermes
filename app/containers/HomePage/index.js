@@ -77,7 +77,7 @@ export class HomePage extends React.PureComponent {
 
     let _me = this;
 
-    this.spotify.getMyTopTracks({limit: 100})
+    this.spotify.getMyTopTracks({limit: 50})
       .then(function(data) {
         _me.topTracks = data.body.items;
 
