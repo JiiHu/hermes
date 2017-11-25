@@ -104,10 +104,20 @@ export class HomePage extends React.PureComponent {
   calculateCloseness(countryFeatures) {
     let total = 0;
 
+    if (!countryFeatures) {
+      console.log("äh");
+      return 0;
+    }
+
     Object.keys(countryFeatures).map(key => (
-      total += Math.abs(
-        this.topFeatures[key] - countryFeatures[key]
-      )
+      (key == "tempo") ?
+        total += Math.abs(
+          (this.topFeatures[key] / 200) - (countryFeatures[key] / 200)
+        )
+      :
+        total += Math.abs(
+          this.topFeatures[key] - countryFeatures[key]
+        )
     ));
 
     return (
@@ -160,7 +170,7 @@ export class HomePage extends React.PureComponent {
                 _me.findClosest();
               }
 
-              //_me.printDevCountryJson()
+              _me.printDevCountryJson();
             }, function(err) {
               _me.resetAuthorization();
             });
@@ -216,11 +226,19 @@ export class HomePage extends React.PureComponent {
         _me.resetAuthorization();
       });
 
-    // analyze all countries
+    // analyze all countries on dev env
     // this.analyzePlaylists();
   }
 
   visualizedPercentage(user, country) {
+    if (false) {
+      return(
+        <div style={{fontSize: "20px"}}>
+          { user + " - " + country }
+        </div>
+      );
+    }
+
     let value = Math.round( (1 - (user/country)) * 100);
 
     if (value >= 0) value = " " + value;
