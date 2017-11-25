@@ -17,10 +17,16 @@ import injectSaga from 'utils/injectSaga';
 import { makeSelectRepos, makeSelectLoading, makeSelectError } from 'containers/App/selectors';
 import H1 from 'components/H1';
 import H2 from 'components/H2';
+import H3 from 'components/H3';
 import A from 'components/A';
 import ReposList from 'components/ReposList';
 import AtPrefix from './AtPrefix';
 import CenteredSection from './CenteredSection';
+import ResultSection from './ResultSection';
+import ResultContainer from './ResultContainer';
+import CompYou from './CompYou';
+import CompValue from './CompValue';
+import CompCountry from './CompCountry';
 import Form from './Form';
 import Input from './Input';
 import Section from './Section';
@@ -35,13 +41,16 @@ import spotifyApi from '../../constants/Spotify';
 import countryPlaylists from '../../constants/countryPlaylists';
 import analyzedCountryPlaylists from '../../constants/analyzedCountryPlaylists';
 
+import Result from './Result';
+
 export class HomePage extends React.PureComponent {
   constructor(props) {
     super(props);
     this.spotify = spotifyApi;
     this.state = {
       code: null,
-      closestCountry: null,
+      closest: null,
+      furthest: null
     };
     this.topFeatures = [];
     this.topTracks = [];
@@ -120,8 +129,8 @@ export class HomePage extends React.PureComponent {
       return b["closeness"] - a["closeness"];
     })[0];
 
-    console.log( closest );
-    console.log( furthest );
+    this.setState({closest: closest});
+    this.setState({furthest: furthest});
   }
 
   // analyze all countries. only needed to run on dev env.
@@ -211,6 +220,18 @@ export class HomePage extends React.PureComponent {
     // this.analyzePlaylists();
   }
 
+  visualizedPercentage(user, country) {
+    let value = Math.round( (1 - (user/country)) * 100);
+
+    if (value >= 0) value = " " + value;
+
+    return(
+      <div style={{fontSize: "20px"}}>
+        { value + " %" }
+      </div>
+    )
+  }
+
   authorized() {
     return(
       <article>
@@ -218,10 +239,49 @@ export class HomePage extends React.PureComponent {
           <title>Home Page</title>
           <meta name="description" content="A React.js Boilerplate application homepage" />
         </Helmet>
+        <ResultContainer>
+          <ResultSection>
+            { this.state.closest ?
+              <div>
+                <H3>You are closest to</H3>
+                <H2>{ this.state.closest.name }</H2>
+              </div>
+              :
+              null
+            }
+          </ResultSection>
+          <ResultSection>
+            { this.state.furthest ?
+              <div>
+                <H3>You are furthest from</H3>
+                <H2>{ this.state.furthest.name }</H2>
+              </div>
+              :
+              null
+            }
+          </ResultSection>
+        </ResultContainer>
+        <p style={{textAlign: 'center', color: '#aaa'}}>{"Percentages below mean the difference of your top tracks compared to country's current top tracks' features."}</p>
         <div>
-          <CenteredSection>
-            <H2>What you are based on your music taste</H2>
-          </CenteredSection>
+          { this.state.furthest ?
+            <div>
+              <div style={{textAlign: "center"}}>
+                { Object.keys(this.state.furthest.meanFeatures).map(id =>
+                    <div style={{marginBottom: "10px"}} key={"furthest-"+id}>
+                      <CompYou>
+                        { this.visualizedPercentage(this.topFeatures[id], this.state.closest.meanFeatures[id]) }
+                      </CompYou>
+                      <CompValue> { id } </CompValue>
+                      <CompCountry>
+                        { this.visualizedPercentage(this.topFeatures[id], this.state.furthest.meanFeatures[id]) }
+                      </CompCountry>
+                    </div>
+                )}
+              </div>
+            </div>
+            :
+            null
+          }
         </div>
       </article>
     );

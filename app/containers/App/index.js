@@ -30,10 +30,12 @@ export default function App() {
   return (
     <AppWrapper>
       <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
+        titleTemplate="%s - Hermes"
+        defaultTitle="Hermes"
       >
-        <meta name="description" content="A React.js Boilerplate application" />
+        <meta name="description" content="What country you are based on your top tracks?" />
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
+
       </Helmet>
       <Switch>
         <Route exact path="/" component={HomePage} />
