@@ -37,9 +37,10 @@ export class HomePage extends React.PureComponent {
     super(props);
     this.spotify = spotifyApi;
     this.state = {
-      code: null,
-      topTracks: []
+      code: null
     };
+    this.topFeatures = [];
+    this.topTracks = [];
   }
 
   authorizeSpotify() {
@@ -51,17 +52,84 @@ export class HomePage extends React.PureComponent {
     }
   }
 
+  resetAuthorization() {
+    localStorage.removeItem("authCode");
+    this.setState({code: null});
+  }
+
   componentDidMount() {
     this.authorizeSpotify();
 
     let _me = this;
 
-    this.spotify.getMyTopTracks({limit: 500})
+    this.spotify.getMyTopTracks({limit: 100})
       .then(function(data) {
-        _me.setState({topTracks: data.body.items})
-        console.log(data.body.items);
+        _me.topTracks = data.body.items;
+
+        _me.analysisForTopTracks();
       }, function(err) {
+        _me.resetAuthorization();
         console.error(err);
+      });
+  }
+
+  analyzePlaylists() {
+    let playlists = [];
+    let playlistIds = Object.keys(playlists);
+
+    let _me = this;
+
+    playlistIds.map(id => (
+      this.spotify.getPlaylistTracks('spotifycharts', id)
+        .then(function(data) {
+
+          var trackIds = data.body.items.map(item => (
+            item.track.id
+          ));
+
+        }, function(err) {
+          _me.resetAuthorization();
+        })
+    ));
+  }
+
+  analysisForTopTracks() {
+    let trackIds = this.topTracks.map(track => (
+      track.id
+    ));
+
+    let _me = this;
+
+    this.spotify.getAudioFeaturesForTracks(trackIds)
+      .then(function(data) {
+
+        let features = {
+          valence: 0,
+          tempo: 0,
+          acousticness: 0,
+          energy: 0,
+          danceability: 0,
+          liveness: 0,
+          speechiness: 0,
+          mode: 0,
+          key: 0,
+        };
+
+        data.body.audio_features.map(track => (
+          Object.keys(features).map(key => (
+            features[key] += track[key]
+          ))
+        ));
+
+        let trackCount = data.body.audio_features.length;
+        Object.keys(features).map(key => (
+          features[key] = parseInt(features[key] / trackCount * 1000.0) / 1000.0
+        ))
+
+        _me.topFeatures = features;
+
+      }, function(err) {
+        _me.resetAuthorization();
       });
   }
 
@@ -74,13 +142,7 @@ export class HomePage extends React.PureComponent {
         </Helmet>
         <div>
           <CenteredSection>
-            <H2>Your top tracks</H2>
-            { this.state.topTracks ?
-              this.state.topTracks.map(element => (
-                <div key={element.id}>{ element.name }</div>
-              ))
-              :
-                null }
+            <H2>What you are based on your music taste</H2>
           </CenteredSection>
         </div>
       </article>
