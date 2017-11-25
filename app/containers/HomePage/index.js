@@ -54,8 +54,8 @@ export class HomePage extends React.PureComponent {
     };
     this.topFeatures = [];
     this.topTracks = [];
-    //this.countries = countryPlaylists;
-    this.countries = analyzedCountryPlaylists;
+    this.countries = countryPlaylists;
+    //this.countries = analyzedCountryPlaylists;
   }
 
   authorizeSpotify() {
@@ -126,6 +126,7 @@ export class HomePage extends React.PureComponent {
   }
 
   findClosest() {
+    console.log(this.countries);
     // calculate for each country that how close they are to user
     Object.keys(this.countries).map(id => (
       this.countries[id]["closeness"] = this.calculateCloseness( this.countries[id]["meanFeatures"] )
@@ -161,6 +162,7 @@ export class HomePage extends React.PureComponent {
           _me.spotify.getAudioFeaturesForTracks(trackIds)
             .then(function(data) {
               _me.countries[id]["meanFeatures"] = _me.analyseFeatures({}, data.body.audio_features);
+              _me.countries[id]["features"] = _me.pushFeatures({}, data.body.audio_features);
 
               let amount = Object.values(_me.countries).map(item => (
                 item.meanFeatures ? true : false
@@ -210,6 +212,30 @@ export class HomePage extends React.PureComponent {
     return features;
   }
 
+  pushFeatures(features, audio_features) {
+    features = {
+      valence: [],
+      tempo: [],
+      acousticness: [],
+      energy: [],
+      danceability: [],
+      liveness: [],
+      speechiness: [],
+      mode: [],
+      key: [],
+    };
+
+    audio_features.map(track => (
+      Object.keys(features).map(key => (
+        track != null ?
+          features[key].push(track[key])
+        : null
+      ))
+    ));
+
+    return features;
+  }
+
   analysisForTopTracks() {
     let trackIds = this.topTracks.map(track => (
       track.id
@@ -227,7 +253,7 @@ export class HomePage extends React.PureComponent {
       });
 
     // analyze all countries on dev env
-    // this.analyzePlaylists();
+    this.analyzePlaylists();
   }
 
   visualizedPercentage(user, country) {
