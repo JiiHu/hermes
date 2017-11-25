@@ -331,7 +331,7 @@ export class HomePage extends React.PureComponent {
           </ResultSection>
         </ResultContainer>
         <br />
-        <p style={{textAlign: 'center', color: '#aaa', margin: "0 auto 10px", width: "80%"}}>{"How big is the distances between you and the country on the given feature?"}</p>
+        <p style={{textAlign: 'center', color: '#aaa', margin: "0 auto 10px", width: "80%"}}>{"How big is the distance between you and the country on the given feature?"}</p>
         <p style={{textAlign: 'center', fontSize: "14px", color: '#ccc', margin: "0 auto 40px", width: "80%"}}>{"Smaller value = closer to you"}</p>
         <div>
           { this.state.furthest ?
