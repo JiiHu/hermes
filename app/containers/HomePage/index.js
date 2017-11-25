@@ -239,7 +239,8 @@ export class HomePage extends React.PureComponent {
       );
     }
 
-    let value = Math.round( (1 - (user/country)) * 100);
+    // 100-(1/(0,9-0,1)*100)
+    let value = Math.round( 100 - (1 / (user-country)) * 100);
 
     if (value >= 0) value = " " + value;
 
