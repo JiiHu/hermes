@@ -37,7 +37,8 @@ export class HomePage extends React.PureComponent {
     super(props);
     this.spotify = spotifyApi;
     this.state = {
-      code: null
+      code: null,
+      topTracks: []
     };
   }
 
@@ -53,10 +54,12 @@ export class HomePage extends React.PureComponent {
   componentDidMount() {
     this.authorizeSpotify();
 
-    console.log( this.spotify );
-    this.spotify.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE')
+    let _me = this;
+
+    this.spotify.getMyTopTracks({limit: 500})
       .then(function(data) {
-        console.log('Artist albums', data.body);
+        _me.setState({topTracks: data.body.items})
+        console.log(data.body.items);
       }, function(err) {
         console.error(err);
       });
@@ -71,7 +74,13 @@ export class HomePage extends React.PureComponent {
         </Helmet>
         <div>
           <CenteredSection>
-            <H2>fukin mint</H2>
+            <H2>Your top tracks</H2>
+            { this.state.topTracks ?
+              this.state.topTracks.map(element => (
+                <div key={element.id}>{ element.name }</div>
+              ))
+              :
+                null }
           </CenteredSection>
         </div>
       </article>
@@ -80,7 +89,7 @@ export class HomePage extends React.PureComponent {
 
   noAuthorization() {
 
-    let scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-library-read', 'user-read-private', 'user-read-birthdate', 'user-read-email', 'user-follow-read', 'user-read-playback-state', 'user-read-recently-played', 'user-read-currently-playing'];
+    let scopes = ['playlist-read-private', 'playlist-read-collaborative', 'user-library-read', 'user-read-private', 'user-read-birthdate', 'user-read-email', 'user-follow-read', 'user-read-playback-state', 'user-read-recently-played', 'user-read-currently-playing', 'user-top-read'];
     let state = 'meme-state';
     let authorizeURL = this.spotify.createAuthorizeURL(scopes, state);
 

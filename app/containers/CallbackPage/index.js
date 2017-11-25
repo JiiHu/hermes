@@ -14,8 +14,6 @@ import List from './List';
 import ListItem from './ListItem';
 import ListItemTitle from './ListItemTitle';
 
-// import queryString from 'query-string';
-
 export default class CallbackPage extends React.Component {
   constructor(props) {
     super(props);
@@ -25,8 +23,6 @@ export default class CallbackPage extends React.Component {
   }
 
   saveAuthCode() {
-    //let params = queryString.parse(this.props.location.search);
-
     let hash = window.location.hash.substring(1);
     let result = hash.split('&').reduce(function (result, item) {
       let parts = item.split('=');
