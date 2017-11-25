@@ -239,8 +239,8 @@ export class HomePage extends React.PureComponent {
       );
     }
 
-    // 100-(1/(0,9-0,1)*100)
-    let value = Math.round( 100 - (1 / (user-country)) * 100);
+    // ((0,2-0,5)/0,2)*100
+    let value = Math.round( (user-country) / user * 100);
 
     if (value >= 0) value = " " + value;
 
@@ -255,8 +255,6 @@ export class HomePage extends React.PureComponent {
     return(
       <article>
         <Helmet>
-          <title>Home Page</title>
-          <meta name="description" content="A React.js Boilerplate application homepage" />
         </Helmet>
         <ResultContainer>
           <ResultSection>
@@ -280,7 +278,7 @@ export class HomePage extends React.PureComponent {
             }
           </ResultSection>
         </ResultContainer>
-        <p style={{textAlign: 'center', color: '#aaa'}}>{"Percentages below mean the difference of your top tracks compared to country's current top tracks' features."}</p>
+        <p style={{textAlign: 'center', color: '#aaa'}}>{"Percentages below mean the difference of country's current top tracks against to your top tracks' features."}</p>
         <div>
           { this.state.furthest ?
             <div>
