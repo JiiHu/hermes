@@ -121,7 +121,11 @@ export class HomePage extends React.PureComponent {
           playlist.features[key].sort()
         );
       playlist.distances[key] = distance;
-      total += distance;
+      if (key == "tempo") {
+        total += (distance / 120);
+      } else {
+        total += distance;
+      }
     });
 
     return (

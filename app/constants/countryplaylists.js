@@ -9,7 +9,7 @@ let playlists = {
   "37i9dQZEVXbL0GavIqMTeb": {id: "37i9dQZEVXbL0GavIqMTeb", name: "Chile", iata: "SCL"},
   "37i9dQZEVXbOa2lmxNORXQ": {id: "37i9dQZEVXbOa2lmxNORXQ", name: "Columbia", iata: "BOG"},
   "37i9dQZEVXbMZAjGMynsQX": {id: "37i9dQZEVXbMZAjGMynsQX", name: "Costa Rica", iata: "SJO"},
-  "37i9dQZEVXbKAbrMR8uuf7": {id: "37i9dQZEVXbKAbrMR8uuf7", name: "Domican Republic", iata: "SDQ"},
+  "37i9dQZEVXbKAbrMR8uuf7": {id: "37i9dQZEVXbKAbrMR8uuf7", name: "Dominican Republic", iata: "SDQ"},
   "37i9dQZEVXbJlM6nvL1nD1": {id: "37i9dQZEVXbJlM6nvL1nD1", name: "Ecuador", iata: "UIO"},
   "37i9dQZEVXbLxoIml4MYkT": {id: "37i9dQZEVXbLxoIml4MYkT", name: "El Salvador", iata: "SAL"},
   "37i9dQZEVXbNFJfN1Vw8d9": {id: "37i9dQZEVXbNFJfN1Vw8d9", name: "Spain", iata: "MAD"},
