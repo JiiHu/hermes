@@ -112,13 +112,17 @@ export class HomePage extends React.PureComponent {
     }
 
     let total = 0;
+    let _me = this;
+    playlist.distances = {};
 
-    Object.keys(playlist.features).map(key => (
-      total += this.euclidean(
-          this.userFeatures[key].sort(),
+    Object.keys(playlist.features).map(function(key){
+      let distance = _me.euclidean(
+          _me.userFeatures[key].sort(),
           playlist.features[key].sort()
-        )
-    ));
+        );
+      playlist.distances[key] = distance;
+      total += distance;
+    });
 
     return (
       Math.round(total / Object.keys(playlist.features).length * 100) / 100
@@ -274,14 +278,6 @@ export class HomePage extends React.PureComponent {
   }
 
   visualizedPercentage(user, country) {
-    if (false) {
-      return(
-        <div style={{fontSize: "20px"}}>
-          { user + " - " + country }
-        </div>
-      );
-    }
-
     // ((0,2-0,5)/0,2)*100
     let value = Math.round( (user-country) / user * 100);
 
@@ -290,6 +286,14 @@ export class HomePage extends React.PureComponent {
     return(
       <div style={{fontSize: "20px"}}>
         { value + " %" }
+      </div>
+    )
+  }
+
+  visualizedDistance(value) {
+    return(
+      <div style={{fontSize: "20px"}}>
+        { Math.round(value * 100) / 100 }
       </div>
     )
   }
@@ -334,13 +338,13 @@ export class HomePage extends React.PureComponent {
                 { Object.keys(this.state.furthest.meanFeatures).map(id =>
                     <div style={{marginBottom: "20px"}} key={"furthest-"+id}>
                       <CompYou>
-                        { this.visualizedPercentage(this.topFeatures[id], this.state.closest.meanFeatures[id]) }
+                        { this.visualizedDistance(this.state.closest.distances[id]) }
                       </CompYou>
                       <CompValue style={{fontSize: "22px"}}>
                         { id.charAt(0).toUpperCase() + id.slice(1) }
                       </CompValue>
                       <CompCountry>
-                        { this.visualizedPercentage(this.topFeatures[id], this.state.furthest.meanFeatures[id]) }
+                        { this.visualizedDistance(this.state.furthest.distances[id]) }
                       </CompCountry>
                     </div>
                 )}
