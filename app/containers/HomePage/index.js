@@ -41,6 +41,8 @@ import spotifyApi from '../../constants/Spotify';
 import countryPlaylists from '../../constants/countryPlaylists';
 import analyzedCountryPlaylists from '../../constants/analyzedCountryPlaylists';
 
+import images from '../../constants/images';
+
 import Result from './Result';
 
 export class HomePage extends React.PureComponent {
@@ -166,6 +168,8 @@ export class HomePage extends React.PureComponent {
 
     console.log(closest)
     console.log(furthest)
+
+    //this.getPlaylistImages()
   }
 
   // analyze all countries. only needed to run on dev env.
@@ -279,6 +283,23 @@ export class HomePage extends React.PureComponent {
 
     // analyze all countries on dev env
     // this.analyzePlaylists();
+  }
+
+  getPlaylistImages() {
+    let playlistIds = Object.keys(this.countries);
+
+    let _me = this;
+
+    let asd = playlistIds.map(id => (
+      this.spotify.getPlaylist('spotifycharts', id)
+        .then(function(data) {
+
+          _me.images[id] = data.body.images[0].url;
+          console.log("-------------");
+          console.log( JSON.stringify(_me.images) );
+
+        }, function(err) { })
+    ));
   }
 
   visualizedPercentage(user, country) {

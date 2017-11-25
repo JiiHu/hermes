@@ -41,4 +41,11 @@ injectGlobal`
   label {
     line-height: 1.5em;
   }
+
+  .album {
+    border-radius: 5px;
+    display: block;
+    margin: 20px auto 0;
+    max-width: 150px;
+  }
 `;
