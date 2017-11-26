@@ -11,7 +11,7 @@ injectGlobal`
   body {
     background: #fafafa;
     font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    padding: 30px 10px;
+    padding: 30px 0;
   }
 
   body.fontLoaded {
@@ -24,6 +24,10 @@ injectGlobal`
     min-width: 100%;
   }
 
+  h1 {
+    font-size: 60px;
+  }
+
   h2 {
     font-size: 42px;
     line-height: 1.2;
@@ -33,6 +37,7 @@ injectGlobal`
 
   h3 {
     color: #aaa;
+    font-size: 16px;
     font-weight: 400;
     margin-bottom: 5px;
   }
@@ -47,5 +52,16 @@ injectGlobal`
     display: block;
     margin: 20px auto 0;
     max-width: 150px;
+  }
+
+  @media (max-width: 767px) {
+    h1 {
+      font-size: 42px;
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 32px;
+    }
   }
 `;

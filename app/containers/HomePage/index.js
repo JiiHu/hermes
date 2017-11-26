@@ -45,6 +45,11 @@ import images from '../../constants/images';
 
 import Result from './Result';
 
+/*
+ * ALL THIS WAS DONE IN SO BIG HURRY IN A HACKATHON,
+ * THAT PLEASE DO NOT READ FURTHER...
+ */
+
 export class HomePage extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -363,7 +368,7 @@ export class HomePage extends React.PureComponent {
                       <CompYou>
                         { this.visualizedDistance(this.state.closest.distances[id]) }
                       </CompYou>
-                      <CompValue style={{fontSize: "22px"}}>
+                      <CompValue>
                         { id.charAt(0).toUpperCase() + id.slice(1) }
                       </CompValue>
                       <CompCountry>
@@ -391,11 +396,11 @@ export class HomePage extends React.PureComponent {
       <article>
         <div>
           <CenteredSection>
-            <h1 style={{fontSize: "60px", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.01em"}}>
-              What country are you based on your music taste?
+            <h1 style={{fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.01em"}}>
+              Which country you are based on your music taste?
             </h1>
             <p style={{color: "#aaa"}}>
-              { "With our app, you can find out to what country's top playlist's features your top tracks suit the most." }
+              { "With Hermes you can find out to which country's top playlist's features are closest to your top tracks." }
             </p>
           </CenteredSection>
           <CenteredSection>
@@ -403,7 +408,7 @@ export class HomePage extends React.PureComponent {
               Login with Spotify
             </H2>
             <A href={authorizeURL}>
-              Login now
+              Login
             </A>
 
           </CenteredSection>
