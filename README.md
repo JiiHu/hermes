@@ -1,5 +1,5 @@
 # Hermes
-With a name derived from Greek gods, Hermes helps you to find music you like from different countries.
+With a name derived from Greek gods, Hermes helps you find out that which country's music taste is closest to yours.
 
 <br />
 <br />
